@@ -1,0 +1,57 @@
+@model PaginatedList<Document>
+@{
+    ViewData["Title"] = "Documents";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-title mb-0">Documents</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-upload"></i> Upload Document</a>
+</div>
+
+<div class="card content-card p-3">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search documents..." />
+        </div>
+        <div class="col-md-4">
+            <select name="type" class="form-select" asp-items="Html.GetEnumSelectList<DocumentType>()"><option value="">All Types</option></select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light"><tr><th>Title</th><th>Type</th><th>Related To</th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var doc in Model)
+                {
+                    <tr>
+                        <td><i class="bi bi-file-earmark-text me-1"></i>@doc.Title</td>
+                        <td><span class="badge @StatusBadge.Document(doc.Type)">@doc.Type</span></td>
+                        <td class="small text-muted">
+                            @if (doc.Project != null) { <span>Project: @doc.Project.Name</span> }
+                            @if (doc.Property != null) { <span>Property: @doc.Property.Code</span> }
+                            @if (doc.Sale != null) { <span>Sale #@doc.Sale.Id</span> }
+                            @if (doc.Rental != null) { <span>Rental #@doc.Rental.Id</span> }
+                        </td>
+                        <td>@doc.UploadedBy?.FullName</td>
+                        <td>@doc.UploadedDate.ToString("yyyy-MM-dd")</td>
+                        <td class="table-actions">
+                            <a asp-action="Download" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-success" title="Download"><i class="bi bi-download"></i></a>
+                            <a href="@doc.FilePath" target="_blank" class="btn btn-sm btn-outline-info" title="View"><i class="bi bi-eye"></i></a>
+                            <a asp-action="Delete" asp-route-id="@doc.Id" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-4">No documents found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="@(new PaginationViewModel(Model.PageIndex, Model.TotalPages))" />
+</div>

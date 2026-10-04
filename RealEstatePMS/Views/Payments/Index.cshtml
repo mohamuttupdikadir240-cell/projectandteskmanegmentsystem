@@ -1,0 +1,61 @@
+@model PaginatedList<Payment>
+@{
+    ViewData["Title"] = "Payments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-title mb-0">Payments</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Payment</a>
+</div>
+
+<div class="card content-card p-3">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by customer..." />
+        </div>
+        <div class="col-md-4">
+            <select name="method" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"><option value="">All Types</option></select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light"><tr><th>Customer</th><th>Type</th><th>Amount</th><th>Date</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var payment in Model)
+                {
+                    <tr>
+                        <td>@payment.Customer?.Name</td>
+                        <td>
+                            @if (payment.SaleId != null)
+                            {
+                                <span class="badge badge-soft-primary">Sale #@payment.SaleId</span>
+                            }
+                            else if (payment.RentalId != null)
+                            {
+                                <span class="badge badge-soft-info">Rental #@payment.RentalId</span>
+                            }
+                        </td>
+                        <td>@payment.Amount.ToString("C0")</td>
+                        <td>@payment.PaymentDate.ToString("yyyy-MM-dd")</td>
+                        <td>@payment.Method</td>
+                        <td><span class="badge badge-soft-success">Completed</span></td>
+                        <td class="table-actions">
+                            <a asp-action="Details" asp-route-id="@payment.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a asp-action="Delete" asp-route-id="@payment.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">No payments found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="@(new PaginationViewModel(Model.PageIndex, Model.TotalPages))" />
+</div>

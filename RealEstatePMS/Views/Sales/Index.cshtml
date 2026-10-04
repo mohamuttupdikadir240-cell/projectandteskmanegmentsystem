@@ -1,0 +1,56 @@
+@model PaginatedList<Sale>
+@{
+    ViewData["Title"] = "Sales Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-title mb-0">Sales Management</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Sale</a>
+</div>
+
+<div class="card content-card p-3">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by customer or property..." />
+        </div>
+        <div class="col-md-4">
+            <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<PaymentStatus>()"><option value="">All Statuses</option></select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light"><tr><th>Customer</th><th>Property</th><th>Sales Agent</th><th>Sale Date</th><th>Final Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var sale in Model)
+                {
+                    <tr>
+                        <td>@sale.Customer?.Name</td>
+                        <td>@sale.Property?.Code</td>
+                        <td>@sale.SalesAgent?.FullName</td>
+                        <td>@sale.SaleDate.ToString("yyyy-MM-dd")</td>
+                        <td>@sale.FinalPrice.ToString("C0")</td>
+                        <td><span class="badge @StatusBadge.Payment(sale.PaymentStatus)">@sale.PaymentStatus</span></td>
+                        <td class="table-actions">
+                            <a asp-action="Details" asp-route-id="@sale.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a asp-action="Edit" asp-route-id="@sale.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            @if (User.IsInRole(Roles.Admin))
+                            {
+                                <a asp-action="Delete" asp-route-id="@sale.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">No sales found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="@(new PaginationViewModel(Model.PageIndex, Model.TotalPages))" />
+</div>

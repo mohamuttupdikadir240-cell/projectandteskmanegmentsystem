@@ -1,0 +1,33 @@
+@model Payment
+@{
+    ViewData["Title"] = "Payment Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-title mb-0">Payment #@Model.Id</h3>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="card content-card p-4">
+    <div class="row g-3">
+        <div class="col-md-4"><div class="text-muted small">Customer</div><div class="fw-semibold">@Model.Customer?.Name</div></div>
+        <div class="col-md-4"><div class="text-muted small">Amount</div><div class="fw-semibold">@Model.Amount.ToString("C0")</div></div>
+        <div class="col-md-4"><div class="text-muted small">Payment Date</div><div class="fw-semibold">@Model.PaymentDate.ToString("MMM dd, yyyy")</div></div>
+        <div class="col-md-4"><div class="text-muted small">Method</div><div class="fw-semibold">@Model.Method</div></div>
+        <div class="col-md-4"><div class="text-muted small">Reference Number</div><div class="fw-semibold">@Model.ReferenceNumber</div></div>
+        <div class="col-md-4">
+            <div class="text-muted small">Related To</div>
+            <div class="fw-semibold">
+                @if (Model.Sale != null)
+                {
+                    <a asp-controller="Sales" asp-action="Details" asp-route-id="@Model.Sale.Id">Sale #@Model.Sale.Id - @Model.Sale.Property?.Code</a>
+                }
+                else if (Model.Rental != null)
+                {
+                    <a asp-controller="Rentals" asp-action="Details" asp-route-id="@Model.Rental.Id">Rental #@Model.Rental.Id - @Model.Rental.Property?.Code</a>
+                }
+            </div>
+        </div>
+        <div class="col-12"><div class="text-muted small">Notes</div><div>@Model.Notes</div></div>
+    </div>
+</div>

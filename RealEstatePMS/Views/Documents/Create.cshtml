@@ -1,0 +1,57 @@
+@model Document
+@{
+    ViewData["Title"] = "Upload Document";
+}
+
+<h3 class="page-title mb-4">Upload Document</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Type" class="form-label"></label>
+                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<DocumentType>()"></select>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ProjectId" class="form-label">Project (optional)</label>
+                <select asp-for="ProjectId" class="form-select" asp-items="ViewBag.Projects"><option value="">-- None --</option></select>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="PropertyId" class="form-label">Property (optional)</label>
+                <select asp-for="PropertyId" class="form-select" asp-items="ViewBag.Properties"><option value="">-- None --</option></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="SaleId" class="form-label">Sale (optional)</label>
+                <select asp-for="SaleId" class="form-select" asp-items="ViewBag.Sales"><option value="">-- None --</option></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="RentalId" class="form-label">Rental (optional)</label>
+                <select asp-for="RentalId" class="form-select" asp-items="ViewBag.Rentals"><option value="">-- None --</option></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="CustomerId" class="form-label">Customer (optional)</label>
+                <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers"><option value="">-- None --</option></select>
+            </div>
+            <div class="col-12">
+                <label class="form-label">File</label>
+                <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                <div class="form-text">Accepted: PDF, Word, Excel, and images. Max 10MB.</div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

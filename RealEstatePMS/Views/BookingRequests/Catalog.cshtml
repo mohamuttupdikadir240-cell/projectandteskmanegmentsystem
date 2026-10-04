@@ -1,0 +1,64 @@
+@model PaginatedList<Property>
+@{
+    ViewData["Title"] = "Browse Properties";
+}
+
+<h3 class="page-title mb-4">Browse Properties</h3>
+
+<div class="card content-card p-3 mb-3">
+    <form method="get" class="row g-2">
+        <div class="col-md-6">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by code or unit..." />
+        </div>
+        <div class="col-md-4">
+            <select name="type" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()"><option value="">All Types</option></select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3">
+    @foreach (var property in Model)
+    {
+        var thumb = property.Images.FirstOrDefault()?.ImagePath;
+        <div class="col-md-6 col-lg-4">
+            <div class="card content-card h-100">
+                @if (thumb != null)
+                {
+                    <img src="@thumb" class="card-img-top" style="height:180px;object-fit:cover;" alt="@property.Code" />
+                }
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <h6 class="fw-semibold mb-0">@property.Code</h6>
+                        <span class="badge badge-soft-success">Available</span>
+                    </div>
+                    <div class="text-muted small mb-2">@property.Project?.Name &middot; @property.Type</div>
+                    <div class="small mb-2">
+                        <i class="bi bi-rulers"></i> @property.Area sqm
+                        @if (property.Bedrooms > 0) { <span class="ms-2"><i class="bi bi-door-closed"></i> @property.Bedrooms bd</span> }
+                        @if (property.Bathrooms > 0) { <span class="ms-2"><i class="bi bi-droplet"></i> @property.Bathrooms ba</span> }
+                    </div>
+                    <div class="fs-5 fw-bold text-primary mb-3">@property.Price.ToString("C0")</div>
+                    <div class="d-flex gap-2">
+                        <a asp-action="Create" asp-route-propertyId="@property.Id" asp-route-type="Purchase" class="btn btn-primary btn-sm flex-fill">
+                            <i class="bi bi-cash-coin"></i> Buy
+                        </a>
+                        <a asp-action="Create" asp-route-propertyId="@property.Id" asp-route-type="Rental" class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="bi bi-key"></i> Rent
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (!Model.Any())
+    {
+        <div class="col-12">
+            <div class="card content-card p-5 text-center text-muted">No properties are available right now. Please check back later.</div>
+        </div>
+    }
+</div>
+
+<partial name="_Pagination" model="@(new PaginationViewModel(Model.PageIndex, Model.TotalPages))" />

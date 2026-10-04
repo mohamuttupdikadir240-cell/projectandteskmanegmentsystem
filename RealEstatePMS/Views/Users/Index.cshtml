@@ -1,0 +1,63 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model List<UserListItemViewModel>
+@{
+    ViewData["Title"] = "Users";
+    var currentUserId = UserManager.GetUserId(User);
+}
+
+<h3 class="page-title mb-4">Users</h3>
+
+<div class="card content-card p-3">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light"><tr><th>Name</th><th>Email</th><th>Roles</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @foreach (var role in user.Roles)
+                            {
+                                <span class="badge badge-soft-primary me-1">@role</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge badge-soft-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-soft-danger">Inactive</span>
+                            }
+                        </td>
+                        <td class="table-actions">
+                            <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                            @if (user.Id != currentUserId)
+                            {
+                                <form asp-action="ToggleActive" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    @if (user.IsActive)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Deactivate"
+                                                onclick="return confirm('Deactivate @user.FullName? They will no longer be able to log in.');">
+                                            <i class="bi bi-person-x"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Activate">
+                                            <i class="bi bi-person-check"></i>
+                                        </button>
+                                    }
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

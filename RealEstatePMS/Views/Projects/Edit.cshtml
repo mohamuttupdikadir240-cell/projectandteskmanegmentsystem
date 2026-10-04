@@ -1,0 +1,80 @@
+@model Project
+@{
+    ViewData["Title"] = "Edit Project";
+}
+
+<h3 class="page-title mb-4">Edit Project</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedDate" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Code" class="form-label"></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Location" class="form-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ProjectManagerId" class="form-label"></label>
+                <select asp-for="ProjectManagerId" class="form-select" asp-items="ViewBag.Managers">
+                    <option value="">-- Select Project Manager --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="StartDate" class="form-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ExpectedEndDate" class="form-label"></label>
+                <input asp-for="ExpectedEndDate" class="form-control" type="date" />
+                <span asp-validation-for="ExpectedEndDate" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Budget" class="form-label"></label>
+                <input asp-for="Budget" class="form-control" />
+                <span asp-validation-for="Budget" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ProjectStatus>()"></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ProgressPercentage" class="form-label"></label>
+                <input asp-for="ProgressPercentage" class="form-control" type="number" min="0" max="100" />
+            </div>
+            <div class="col-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-12">
+                <label for="changeReason" class="form-label">Reason for status/progress change</label>
+                <textarea name="changeReason" id="changeReason" class="form-control" rows="2"
+                          placeholder="Required only if you change Status or Progress %, e.g. 'Foundation work finished ahead of schedule.'">@ViewBag.ChangeReason</textarea>
+                <span class="text-danger small">@ViewData.ModelState["changeReason"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+                <div class="form-text">This is recorded in the project's status timeline so everyone can see why it changed.</div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

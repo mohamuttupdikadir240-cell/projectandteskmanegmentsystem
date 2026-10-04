@@ -1,0 +1,57 @@
+@model PaginatedList<Customer>
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-title mb-0">Customers</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Customer</a>
+</div>
+
+<div class="card content-card p-3">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search customers..." />
+        </div>
+        <div class="col-md-4">
+            <select name="nationality" class="form-select">
+                <option value="">All Countries</option>
+                @foreach (var n in (List<string>)ViewBag.Nationalities)
+                {
+                    <option value="@n" selected="@(n == ViewBag.Nationality)">@n</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light"><tr><th>Name</th><th>Phone</th><th>Email</th><th>Nationality</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var customer in Model)
+                {
+                    <tr>
+                        <td>@customer.Name</td>
+                        <td>@customer.Phone</td>
+                        <td>@customer.Email</td>
+                        <td>@customer.Nationality</td>
+                        <td class="table-actions">
+                            <a asp-action="Details" asp-route-id="@customer.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Delete" asp-route-id="@customer.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-4">No customers found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="@(new PaginationViewModel(Model.PageIndex, Model.TotalPages))" />
+</div>

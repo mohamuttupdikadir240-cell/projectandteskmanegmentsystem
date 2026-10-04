@@ -1,0 +1,64 @@
+@model List<BookingRequest>
+@{
+    ViewData["Title"] = "Booking Requests";
+}
+
+<h3 class="page-title mb-4">Booking Requests</h3>
+
+<div class="card content-card p-3 mb-3">
+    <form method="get" class="row g-2">
+        <div class="col-md-4">
+            <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<BookingStatus>()">
+                <option value="">Pending (default)</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="card content-card p-3">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light"><tr><th>Booking #</th><th>Customer</th><th>Property</th><th>Type</th><th>Offered Amount</th><th>Payment Method</th><th>Requested</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@b.BookingNumber</td>
+                        <td>@b.Customer?.Name</td>
+                        <td>@b.Property?.Code</td>
+                        <td>@(b.Type == BookingType.Purchase ? "Buy" : "Rent")</td>
+                        <td>@(b.ProposedAmount.HasValue ? b.ProposedAmount.Value.ToString("C0") : "-")</td>
+                        <td>@b.PreferredPaymentMethod</td>
+                        <td>@b.RequestDate.ToString("MMM dd, yyyy HH:mm")</td>
+                        <td><span class="badge @StatusBadge.Booking(b.Status)">@b.Status</span></td>
+                        <td class="table-actions">
+                            @if (b.Status == BookingStatus.Pending)
+                            {
+                                <a asp-action="Confirm" asp-route-id="@b.Id" class="btn btn-sm btn-success" title="Confirm">
+                                    <i class="bi bi-check-lg"></i> Confirm
+                                </a>
+                                <form asp-action="Reject" asp-route-id="@b.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Reject"
+                                            onclick="return confirm('Decline this booking request?');">
+                                        <i class="bi bi-x-lg"></i> Reject
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Reviewed @b.ReviewedDate?.ToString("MMM dd, yyyy")</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted py-4">No booking requests found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

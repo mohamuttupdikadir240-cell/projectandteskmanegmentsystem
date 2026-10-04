@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Role Permissions";
+    var matrix = (Dictionary<string, HashSet<string>>)ViewBag.Matrix;
+    bool IsChecked(string role, string module) => matrix.TryGetValue(role, out var set) && set.Contains(module);
+}
+
+<h3 class="page-title mb-2">Role Permissions</h3>
+<p class="text-muted mb-4">Control which modules each role can access. Changes apply immediately across the whole system - no restart needed.</p>
+
+@Html.AntiForgeryToken()
+
+<div class="card content-card p-3">
+    <div class="table-responsive">
+        <table class="table align-middle" id="permissionsTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Module</th>
+                    @foreach (var role in Modules.ConfigurableRoles)
+                    {
+                        <th class="text-center">@role</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (key, displayName, icon) in Modules.All)
+                {
+                    <tr>
+                        <td><i class="bi @icon me-2 text-muted"></i>@displayName</td>
+                        @foreach (var role in Modules.ConfigurableRoles)
+                        {
+                            <td class="text-center">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input permission-toggle" type="checkbox" role="switch"
+                                           data-role="@role" data-module="@key"
+                                           checked="@(IsChecked(role, key) ? "checked" : null)" />
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="text-muted small mt-2">
+        <i class="bi bi-info-circle"></i> Admin always has full access to every module and is not shown here.
+        Customers use a separate booking flow (Browse Properties / My Bookings) rather than these staff modules.
+    </div>
+</div>
+
+<div id="saveToast" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080; display:none;">
+    <div class="toast align-items-center text-bg-success border-0 show" role="alert">
+        <div class="d-flex">
+            <div class="toast-body"><i class="bi bi-check-circle"></i> Permission updated</div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const toast = document.getElementById('saveToast');
+        let toastTimer = null;
+
+        document.querySelectorAll('.permission-toggle').forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                const body = new URLSearchParams({
+                    role: checkbox.dataset.role,
+                    module: checkbox.dataset.module,
+                    isAllowed: checkbox.checked,
+                    __RequestVerificationToken: token
+                });
+
+                fetch('@Url.Action("Save", "RolePermissions")', {
+                    method: 'POST',
+                    body: body
+                }).then(function (response) {
+                    if (response.ok) {
+                        toast.style.display = 'block';
+                        clearTimeout(toastTimer);
+                        toastTimer = setTimeout(function () { toast.style.display = 'none'; }, 1500);
+                    } else {
+                        checkbox.checked = !checkbox.checked;
+                        alert('Could not save this change. Please try again.');
+                    }
+                }).catch(function () {
+                    checkbox.checked = !checkbox.checked;
+                    alert('Could not save this change. Please try again.');
+                });
+            });
+        });
+    </script>
+}

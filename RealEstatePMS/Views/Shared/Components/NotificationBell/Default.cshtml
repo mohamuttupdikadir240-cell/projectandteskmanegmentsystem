@@ -1,0 +1,34 @@
+@model List<Notification>
+<li class="nav-item dropdown me-2">
+    <a class="nav-link position-relative" href="#" id="notifBell" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell fs-5"></i>
+        @if ((int)ViewBag.UnreadCount > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                @ViewBag.UnreadCount
+            </span>
+        }
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow notif-dropdown" aria-labelledby="notifBell">
+        <li><h6 class="dropdown-header">Notifications</h6></li>
+        @if (!Model.Any())
+        {
+            <li><span class="dropdown-item-text text-muted small">No notifications yet.</span></li>
+        }
+        else
+        {
+            foreach (var n in Model)
+            {
+                <li>
+                    <a class="dropdown-item @(n.IsRead ? "" : "fw-semibold bg-light")" href="@Url.Action("Index", "Notifications")">
+                        <div class="small text-truncate">@n.Title</div>
+                        <div class="small text-muted text-truncate">@n.Message</div>
+                        <div class="small text-muted">@n.CreatedDate.ToString("MMM dd, HH:mm")</div>
+                    </a>
+                </li>
+            }
+        }
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-center small" href="@Url.Action("Index", "Notifications")">View all notifications</a></li>
+    </ul>
+</li>

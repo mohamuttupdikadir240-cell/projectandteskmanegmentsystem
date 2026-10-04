@@ -1,0 +1,211 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h3 class="page-title mb-4">Dashboard</h3>
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Projects" asp-action="Index">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#3b6fd6;"><i class="bi bi-kanban"></i></div>
+                    <div>
+                        <div class="text-muted small">Total Projects</div>
+                        <div class="fs-4 fw-bold">@Model.TotalProjects</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Projects" asp-action="Index" asp-route-status="InProgress">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#1a9d5e;"><i class="bi bi-hourglass-split"></i></div>
+                    <div>
+                        <div class="text-muted small">Active Projects</div>
+                        <div class="fs-4 fw-bold">@Model.ActiveProjects</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Projects" asp-action="Index" asp-route-status="Completed">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#8a5cf5;"><i class="bi bi-check2-circle"></i></div>
+                    <div>
+                        <div class="text-muted small">Completed Projects</div>
+                        <div class="fs-4 fw-bold">@Model.CompletedProjects</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Properties" asp-action="Index">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#b8860b;"><i class="bi bi-buildings"></i></div>
+                    <div>
+                        <div class="text-muted small">Total Properties</div>
+                        <div class="fs-4 fw-bold">@Model.TotalProperties</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Properties" asp-action="Index" asp-route-status="Available">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#1a9d5e;"><i class="bi bi-house-check"></i></div>
+                    <div>
+                        <div class="text-muted small">Available Properties</div>
+                        <div class="fs-4 fw-bold">@Model.AvailableProperties</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Properties" asp-action="Index" asp-route-status="Sold">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#d9463f;"><i class="bi bi-house-x"></i></div>
+                    <div>
+                        <div class="text-muted small">Sold Properties</div>
+                        <div class="fs-4 fw-bold">@Model.SoldProperties</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Properties" asp-action="Index" asp-route-status="Rented">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#1f7bb6;"><i class="bi bi-key"></i></div>
+                    <div>
+                        <div class="text-muted small">Rented Properties</div>
+                        <div class="fs-4 fw-bold">@Model.RentedProperties</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a class="stat-card-link" asp-controller="Customers" asp-action="Index">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#8a5cf5;"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="text-muted small">Total Customers</div>
+                        <div class="fs-4 fw-bold">@Model.TotalCustomers</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <a class="stat-card-link" asp-controller="Sales" asp-action="Index">
+            <div class="card stat-card p-3">
+                <div class="text-muted small">Total Sales</div>
+                <div class="fs-4 fw-bold text-primary">@Model.TotalSales.ToString("C0")</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="stat-card-link" asp-controller="Payments" asp-action="Index">
+            <div class="card stat-card p-3">
+                <div class="text-muted small">Total Revenue</div>
+                <div class="fs-4 fw-bold text-success">@Model.TotalRevenue.ToString("C0")</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="stat-card-link" asp-controller="Sales" asp-action="Index" asp-route-status="Partial">
+            <div class="card stat-card p-3">
+                <div class="text-muted small">Pending Payments</div>
+                <div class="fs-4 fw-bold text-danger">@Model.PendingPayments.ToString("C0")</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card content-card p-3">
+            <h6 class="fw-semibold mb-3">Sales &amp; Revenue</h6>
+            <canvas id="salesRevenueChart" height="110"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="card content-card p-3">
+            <h6 class="fw-semibold mb-3">Property Types</h6>
+            <canvas id="propertyTypeChart"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="card content-card p-3">
+            <h6 class="fw-semibold mb-3">Recent Activities</h6>
+            <ul class="list-unstyled mb-0">
+                @foreach (var activity in Model.RecentActivities)
+                {
+                    <li class="d-flex align-items-start gap-2 mb-3">
+                        <i class="bi @activity.Icon @activity.ColorClass"></i>
+                        <div>
+                            <div class="small">@activity.Description</div>
+                            <div class="text-muted" style="font-size:0.72rem;">@activity.Date.ToString("MMM dd, HH:mm")</div>
+                        </div>
+                    </li>
+                }
+                @if (!Model.RecentActivities.Any())
+                {
+                    <li class="text-muted small">No recent activity.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const months = @Html.Raw(Json.Serialize(Model.ChartMonths));
+        const salesData = @Html.Raw(Json.Serialize(Model.ChartSales));
+        const revenueData = @Html.Raw(Json.Serialize(Model.ChartRevenue));
+
+        new Chart(document.getElementById('salesRevenueChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Sales', data: salesData, borderColor: '#3b6fd6', backgroundColor: 'rgba(59,111,214,0.15)', fill: true, tension: 0.35 },
+                    { label: 'Revenue', data: revenueData, borderColor: '#1a9d5e', backgroundColor: 'rgba(26,157,94,0.12)', fill: true, tension: 0.35 }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        const typeLabels = @Html.Raw(Json.Serialize(Model.PropertyTypeDistribution.Keys));
+        const typeValues = @Html.Raw(Json.Serialize(Model.PropertyTypeDistribution.Values));
+
+        new Chart(document.getElementById('propertyTypeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: typeLabels,
+                datasets: [{ data: typeValues, backgroundColor: ['#3b6fd6', '#1a9d5e', '#8a5cf5', '#b8860b', '#d9463f'] }]
+            },
+            options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+        });
+    </script>
+}

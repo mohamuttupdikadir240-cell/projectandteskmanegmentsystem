@@ -1,0 +1,70 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h3 class="page-title mb-4">My Profile</h3>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card form-card p-4">
+            <form asp-controller="Account" asp-action="Profile" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                    {
+                        <img src="@Model.ProfileImagePath" class="rounded-circle" style="width:72px;height:72px;object-fit:cover;" alt="avatar" />
+                    }
+                    else
+                    {
+                        <i class="bi bi-person-circle" style="font-size:72px;" class="text-secondary"></i>
+                    }
+                    <div>
+                        <label class="form-label mb-1">Profile Photo</label>
+                        <input type="file" name="ProfileImageFile" class="form-control form-control-sm" accept="image/*" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Roles</label>
+                    <div>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <span class="badge badge-soft-primary me-1">@role</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3 text-muted small">
+                    Member since @Model.CreatedDate.ToString("MMM dd, yyyy")
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-outline-secondary">Change Password</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

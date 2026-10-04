@@ -1,0 +1,146 @@
+@model Project
+@{
+    ViewData["Title"] = "Project Details";
+    var history = (List<ProjectStatusHistory>)ViewBag.StatusHistory;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-title mb-0">@Model.Name</h3>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card content-card p-4 mb-3">
+            <div class="row g-3">
+                <div class="col-md-4"><div class="text-muted small">Project Code</div><div class="fw-semibold">@Model.Code</div></div>
+                <div class="col-md-4"><div class="text-muted small">Location</div><div class="fw-semibold">@Model.Location</div></div>
+                <div class="col-md-4"><div class="text-muted small">Status</div><span class="badge @StatusBadge.Project(Model.Status)">@Model.Status</span></div>
+                <div class="col-md-4"><div class="text-muted small">Start Date</div><div class="fw-semibold">@Model.StartDate.ToString("MMM dd, yyyy")</div></div>
+                <div class="col-md-4"><div class="text-muted small">Expected End Date</div><div class="fw-semibold">@Model.ExpectedEndDate.ToString("MMM dd, yyyy")</div></div>
+                <div class="col-md-4"><div class="text-muted small">Budget</div><div class="fw-semibold">@Model.Budget.ToString("C0")</div></div>
+                <div class="col-md-4"><div class="text-muted small">Project Manager</div><div class="fw-semibold">@(Model.ProjectManager?.FullName ?? "Unassigned")</div></div>
+                <div class="col-md-4"><div class="text-muted small">Number of Properties</div><div class="fw-semibold">@Model.NumberOfProperties</div></div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Progress</div>
+                    <div class="progress mt-1" style="height:8px;"><div class="progress-bar" style="width:@Model.ProgressPercentage%"></div></div>
+                </div>
+                <div class="col-12">
+                    <div class="text-muted small">Description</div>
+                    <div>@Model.Description</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card content-card p-4 mb-3">
+            <h6 class="fw-semibold mb-3">Properties in this Project</h6>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light"><tr><th>Code</th><th>Type</th><th>Unit</th><th>Price</th><th>Status</th></tr></thead>
+                    <tbody>
+                        @foreach (var p in Model.Properties)
+                        {
+                            <tr>
+                                <td>@p.Code</td>
+                                <td>@p.Type</td>
+                                <td>@p.UnitNumber</td>
+                                <td>@p.Price.ToString("C0")</td>
+                                <td><span class="badge @StatusBadge.Property(p.Status)">@p.Status</span></td>
+                            </tr>
+                        }
+                        @if (!Model.Properties.Any())
+                        {
+                            <tr><td colspan="5" class="text-center text-muted py-3">No properties yet.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card content-card p-4">
+            <h6 class="fw-semibold mb-3">Tasks</h6>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light"><tr><th>Task</th><th>Assigned To</th><th>Due Date</th><th>Priority</th><th>Status</th><th>Progress</th></tr></thead>
+                    <tbody>
+                        @foreach (var t in Model.Tasks)
+                        {
+                            <tr>
+                                <td>@t.Name</td>
+                                <td>@(t.AssignedEmployee?.FullName ?? "-")</td>
+                                <td>@t.DueDate.ToString("MMM dd, yyyy")</td>
+                                <td><span class="badge @StatusBadge.Priority(t.Priority)">@t.Priority</span></td>
+                                <td><span class="badge @StatusBadge.TaskStatus(t.Status)">@t.Status</span></td>
+                                <td>@t.Progress%</td>
+                            </tr>
+                        }
+                        @if (!Model.Tasks.Any())
+                        {
+                            <tr><td colspan="6" class="text-center text-muted py-3">No tasks yet.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card content-card p-4 mb-3">
+            <h6 class="fw-semibold mb-3">Documents</h6>
+            <ul class="list-unstyled mb-0">
+                @foreach (var doc in Model.Documents)
+                {
+                    <li class="mb-2">
+                        <a href="@doc.FilePath" target="_blank"><i class="bi bi-file-earmark-text"></i> @doc.Title</a>
+                    </li>
+                }
+                @if (!Model.Documents.Any())
+                {
+                    <li class="text-muted small">No documents uploaded.</li>
+                }
+            </ul>
+        </div>
+
+        <div class="card content-card p-4">
+            <h6 class="fw-semibold mb-3">Project Timeline</h6>
+            <p class="text-muted small">History of status/progress changes and why they happened.</p>
+            <ul class="list-unstyled mb-0">
+                <li class="d-flex gap-2 mb-3">
+                    <i class="bi bi-flag-fill text-primary"></i>
+                    <div>
+                        <div class="small fw-semibold">Project created - @Model.Status (@Model.ProgressPercentage%)</div>
+                        <div class="text-muted" style="font-size:0.72rem;">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</div>
+                    </div>
+                </li>
+                @foreach (var h in history)
+                {
+                    <li class="d-flex gap-2 mb-3 border-top pt-3">
+                        <i class="bi bi-arrow-right-circle-fill text-warning"></i>
+                        <div>
+                            <div class="small fw-semibold">
+                                <span class="badge @StatusBadge.Project(h.OldStatus)">@h.OldStatus</span>
+                                <i class="bi bi-arrow-right mx-1"></i>
+                                <span class="badge @StatusBadge.Project(h.NewStatus)">@h.NewStatus</span>
+                            </div>
+                            <div class="small text-muted mt-1">Progress: @h.OldProgress% &rarr; @h.NewProgress%</div>
+                            @if (!string.IsNullOrWhiteSpace(h.Reason))
+                            {
+                                <div class="small mt-1"><i class="bi bi-chat-left-quote"></i> @h.Reason</div>
+                            }
+                            <div class="text-muted mt-1" style="font-size:0.72rem;">
+                                @(h.ChangedBy?.FullName ?? "System") &middot; @h.ChangedDate.ToString("MMM dd, yyyy HH:mm")
+                            </div>
+                        </div>
+                    </li>
+                }
+                @if (!history.Any())
+                {
+                    <li class="text-muted small">No status changes recorded yet.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

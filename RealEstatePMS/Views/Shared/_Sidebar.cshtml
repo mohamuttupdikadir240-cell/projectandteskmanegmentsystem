@@ -1,0 +1,132 @@
+@using Microsoft.EntityFrameworkCore
+@using RealEstatePMS.Data
+@using RealEstatePMS.Models.Enums
+@using RealEstatePMS.Services
+@inject IPermissionService Permissions
+@inject ApplicationDbContext DbContext
+@{
+    string ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string act = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    string ActiveIf(string controllerName) => ctrl.Equals(controllerName, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    string ActiveIfAction(string controllerName, string actionName) =>
+        ctrl.Equals(controllerName, StringComparison.OrdinalIgnoreCase) && act.Equals(actionName, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+
+    var canSeeBookingQueue = await Permissions.CanAccessAsync(User, Modules.BookingRequests);
+    var pendingBookingsCount = canSeeBookingQueue
+        ? await DbContext.BookingRequests.CountAsync(b => b.Status == BookingStatus.Pending)
+        : 0;
+}
+<nav class="app-sidebar">
+    <div class="brand">
+        <i class="bi bi-buildings-fill"></i>
+        <span>RealEstate PMS</span>
+    </div>
+    <div class="nav flex-column py-2">
+        <a class="nav-link @ActiveIf("Home")" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        @if (await Permissions.CanAccessAsync(User, Modules.Projects))
+        {
+            <a class="nav-link @ActiveIf("Projects")" asp-controller="Projects" asp-action="Index">
+                <i class="bi bi-kanban"></i> Projects
+            </a>
+        }
+
+        @if (await Permissions.CanAccessAsync(User, Modules.Properties))
+        {
+            <a class="nav-link @ActiveIf("Properties")" asp-controller="Properties" asp-action="Index">
+                <i class="bi bi-house-door"></i> Properties
+            </a>
+        }
+        @if (await Permissions.CanAccessAsync(User, Modules.Customers))
+        {
+            <a class="nav-link @ActiveIf("Customers")" asp-controller="Customers" asp-action="Index">
+                <i class="bi bi-people"></i> Customers
+            </a>
+        }
+        @if (await Permissions.CanAccessAsync(User, Modules.Sales))
+        {
+            <a class="nav-link @ActiveIf("Sales")" asp-controller="Sales" asp-action="Index">
+                <i class="bi bi-cash-coin"></i> Sales
+            </a>
+        }
+        @if (await Permissions.CanAccessAsync(User, Modules.Rentals))
+        {
+            <a class="nav-link @ActiveIf("Rentals")" asp-controller="Rentals" asp-action="Index">
+                <i class="bi bi-key"></i> Rentals
+            </a>
+        }
+        @if (await Permissions.CanAccessAsync(User, Modules.Payments))
+        {
+            <a class="nav-link @ActiveIf("Payments")" asp-controller="Payments" asp-action="Index">
+                <i class="bi bi-credit-card"></i> Payments
+            </a>
+        }
+
+        @if (canSeeBookingQueue)
+        {
+            <a class="nav-link d-flex align-items-center @ActiveIfAction("BookingRequests", "Index")" asp-controller="BookingRequests" asp-action="Index">
+                <i class="bi bi-calendar-check"></i>
+                <span>Booking Requests</span>
+                @if (pendingBookingsCount > 0)
+                {
+                    <span class="badge rounded-pill bg-danger ms-auto sidebar-badge">@pendingBookingsCount</span>
+                }
+            </a>
+        }
+
+        @if (User.IsInRole(Roles.Customer))
+        {
+            <a class="nav-link @ActiveIfAction("BookingRequests", "Catalog")" asp-controller="BookingRequests" asp-action="Catalog">
+                <i class="bi bi-house-door"></i> Browse Properties
+            </a>
+            <a class="nav-link @ActiveIfAction("BookingRequests", "MyBookings")" asp-controller="BookingRequests" asp-action="MyBookings">
+                <i class="bi bi-bookmark-check"></i> My Bookings
+            </a>
+        }
+
+        @if (await Permissions.CanAccessAsync(User, Modules.Tasks))
+        {
+            <a class="nav-link @ActiveIf("ProjectTasks")" asp-controller="ProjectTasks" asp-action="Index">
+                <i class="bi bi-list-check"></i> Tasks
+            </a>
+        }
+
+        @if (await Permissions.CanAccessAsync(User, Modules.Documents))
+        {
+            <a class="nav-link @ActiveIf("Documents")" asp-controller="Documents" asp-action="Index">
+                <i class="bi bi-file-earmark-text"></i> Documents
+            </a>
+        }
+
+        @if (await Permissions.CanAccessAsync(User, Modules.Reports))
+        {
+            <a class="nav-link @ActiveIf("Reports")" asp-controller="Reports" asp-action="Index">
+                <i class="bi bi-graph-up"></i> Reports
+            </a>
+        }
+
+        <a class="nav-link @ActiveIf("Notifications")" asp-controller="Notifications" asp-action="Index">
+            <i class="bi bi-bell"></i> Notifications
+        </a>
+
+        @if (User.IsInRole(Roles.Admin))
+        {
+            <a class="nav-link @ActiveIf("Users")" asp-controller="Users" asp-action="Index">
+                <i class="bi bi-person-gear"></i> Users
+            </a>
+            <a class="nav-link @ActiveIf("RolePermissions")" asp-controller="RolePermissions" asp-action="Index">
+                <i class="bi bi-shield-lock"></i> Role Permissions
+            </a>
+        }
+
+        <a class="nav-link @ActiveIfAction("Account", "Profile")" asp-controller="Account" asp-action="Profile">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+        <a class="nav-link @ActiveIfAction("Account", "NotificationSettings")" asp-controller="Account" asp-action="NotificationSettings">
+            <i class="bi bi-bell-slash"></i> Notification Settings
+        </a>
+    </div>
+</nav>

@@ -1,0 +1,94 @@
+@model BookingRequestFormViewModel
+@{
+    var property = (Property)ViewBag.Property;
+    ViewData["Title"] = "Request Booking";
+}
+
+<h3 class="page-title mb-4">
+    @(Model.Type == BookingType.Purchase ? "Request to Buy" : "Request to Rent") - @property.Code
+</h3>
+
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="card content-card p-4">
+            <h6 class="fw-semibold mb-3">Property Summary</h6>
+            <dl class="row mb-0">
+                <dt class="col-sm-5">Code</dt><dd class="col-sm-7">@property.Code</dd>
+                <dt class="col-sm-5">Project</dt><dd class="col-sm-7">@property.Project?.Name</dd>
+                <dt class="col-sm-5">Type</dt><dd class="col-sm-7">@property.Type</dd>
+                <dt class="col-sm-5">Area</dt><dd class="col-sm-7">@property.Area sqm</dd>
+                <dt class="col-sm-5">Price</dt><dd class="col-sm-7 fw-bold text-primary">@property.Price.ToString("C0")</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card form-card p-4">
+            <form asp-action="Create" method="post">
+                <input type="hidden" asp-for="PropertyId" />
+                <input type="hidden" asp-for="Type" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <h6 class="fw-semibold mb-3">Your Contact Details</h6>
+                <div class="row g-3 mb-2">
+                    <div class="col-md-12">
+                        <label asp-for="ContactName" class="form-label"></label>
+                        <input asp-for="ContactName" class="form-control" placeholder="Full name" />
+                        <span asp-validation-for="ContactName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ContactPhone" class="form-label"></label>
+                        <input asp-for="ContactPhone" class="form-control" placeholder="+252 61 xxx xxxx" />
+                        <span asp-validation-for="ContactPhone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ContactEmail" class="form-label"></label>
+                        <input asp-for="ContactEmail" class="form-control" placeholder="you@example.com" />
+                        <span asp-validation-for="ContactEmail" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <hr class="my-3" />
+
+                <h6 class="fw-semibold mb-3">Payment Details</h6>
+                <input type="hidden" asp-for="ListedPrice" />
+                <div class="row g-3 mb-2">
+                    <div class="col-md-6">
+                        <label asp-for="ProposedAmount" class="form-label">
+                            @(Model.Type == BookingType.Purchase ? "Amount You're Offering" : "Monthly Rent You're Offering")
+                        </label>
+                        <input asp-for="ProposedAmount" class="form-control" />
+                        <span asp-validation-for="ProposedAmount" class="text-danger small"></span>
+                        <div class="form-text">Listed price: @property.Price.ToString("C0"). You can offer less - our team will confirm the final amount.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ProposedDeposit" class="form-label"></label>
+                        <input asp-for="ProposedDeposit" class="form-control" placeholder="0" />
+                        <span asp-validation-for="ProposedDeposit" class="text-danger small"></span>
+                        <div class="form-text">How much you're ready to pay upfront once confirmed (optional).</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PreferredPaymentMethod" class="form-label"></label>
+                        <select asp-for="PreferredPaymentMethod" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label">Message (optional)</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Anything you'd like our team to know..."></textarea>
+                </div>
+
+                <div class="alert alert-info small">
+                    Submitting this request does not charge you. The amounts above are your offer - our team
+                    will review it and confirm the final @(Model.Type == BookingType.Purchase ? "sale price" : "rent") with you directly.
+                </div>
+
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Submit Request</button>
+                <a asp-action="Catalog" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

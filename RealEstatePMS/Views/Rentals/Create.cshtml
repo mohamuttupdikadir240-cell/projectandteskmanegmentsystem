@@ -1,0 +1,59 @@
+@model Rental
+@{
+    ViewData["Title"] = "Add Rental";
+}
+
+<h3 class="page-title mb-4">Add Rental</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CustomerId" class="form-label">Customer/Tenant</label>
+                <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers">
+                    <option value="">-- Select Customer --</option>
+                </select>
+                <span asp-validation-for="CustomerId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="PropertyId" class="form-label">Property</label>
+                <select asp-for="PropertyId" class="form-select" asp-items="ViewBag.Properties">
+                    <option value="">-- Select Available Property --</option>
+                </select>
+                <span asp-validation-for="PropertyId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="MonthlyRent" class="form-label"></label>
+                <input asp-for="MonthlyRent" class="form-control" />
+                <span asp-validation-for="MonthlyRent" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="StartDate" class="form-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="EndDate" class="form-label"></label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+                <span asp-validation-for="EndDate" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Deposit" class="form-label"></label>
+                <input asp-for="Deposit" class="form-control" />
+            </div>
+        </div>
+
+        <div class="alert alert-info small mt-3">
+            The property will automatically be marked as <strong>Rented</strong> once this rental is created.
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Rental</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

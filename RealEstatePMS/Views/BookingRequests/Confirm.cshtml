@@ -1,0 +1,125 @@
+@model BookingRequest
+@{
+    ViewData["Title"] = "Confirm Booking";
+    var isPurchase = Model.Type == BookingType.Purchase;
+
+    var amount = Model.ProposedAmount ?? Model.Property?.Price ?? 0;
+    var depositGuess = Model.ProposedDeposit ?? 0;
+    var suggestedStatus = depositGuess <= 0
+        ? PaymentStatus.Pending
+        : depositGuess >= amount ? PaymentStatus.Paid : PaymentStatus.Partial;
+}
+
+<h3 class="page-title mb-4">Confirm @(isPurchase ? "Sale" : "Rental") - @Model.Property?.Code</h3>
+
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="card content-card p-4">
+            <h6 class="fw-semibold mb-3">Request Summary</h6>
+            <dl class="row mb-0">
+                <dt class="col-sm-5">Booking #</dt><dd class="col-sm-7 fw-semibold">@Model.BookingNumber</dd>
+                <dt class="col-sm-5">Customer</dt><dd class="col-sm-7">@Model.Customer?.Name</dd>
+                <dt class="col-sm-5">Property</dt><dd class="col-sm-7">@Model.Property?.Code (@Model.Property?.Project?.Name)</dd>
+                <dt class="col-sm-5">Listed Price</dt><dd class="col-sm-7">@Model.Property?.Price.ToString("C0")</dd>
+                <dt class="col-sm-5">Request Type</dt><dd class="col-sm-7">@(isPurchase ? "Buy" : "Rent")</dd>
+                <dt class="col-sm-5">Preferred Payment</dt><dd class="col-sm-7">@Model.PreferredPaymentMethod</dd>
+                @if (Model.ProposedAmount.HasValue)
+                {
+                    <dt class="col-sm-5">Customer Offered</dt><dd class="col-sm-7 fw-semibold text-primary">@Model.ProposedAmount.Value.ToString("C0")</dd>
+                }
+                @if (Model.ProposedDeposit.HasValue)
+                {
+                    <dt class="col-sm-5">Customer's Planned Deposit</dt><dd class="col-sm-7">@Model.ProposedDeposit.Value.ToString("C0")</dd>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                {
+                    <dt class="col-sm-5">Customer Notes</dt><dd class="col-sm-7">@Model.Notes</dd>
+                }
+            </dl>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card form-card p-4">
+            <form asp-action="Confirm" asp-route-id="@Model.Id" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">@(isPurchase ? "Agreed Sale Price" : "Monthly Rent")</label>
+                    <input type="number" step="0.01" id="agreedAmountInput" name="agreedAmount" class="form-control"
+                           value="@(Model.ProposedAmount ?? Model.Property?.Price)" required />
+                    <div class="form-text">
+                        @if (Model.ProposedAmount.HasValue)
+                        {
+                            <span>Pre-filled with the customer's offer. Adjust if you agreed on a different amount.</span>
+                        }
+                        else if (isPurchase)
+                        {
+                            <span>Defaults to the listed price. Lower it to record a discount.</span>
+                        }
+                        else
+                        {
+                            <span>Enter the actual monthly rent agreed with the tenant - this is not automatically the property's listed price.</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Deposit Received</label>
+                    <input type="number" step="0.01" id="depositInput" name="deposit" class="form-control" value="@(Model.ProposedDeposit ?? 0)" />
+                </div>
+
+                <div class="alert alert-warning d-flex justify-content-between align-items-center py-2 mb-3">
+                    <span class="small mb-0">Remaining Balance</span>
+                    <span class="fw-bold" id="remainingBalanceDisplay">@((amount - depositGuess).ToString("C0"))</span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Payment Status</label>
+                    <select name="paymentStatus" class="form-select">
+                        @foreach (PaymentStatus statusOption in Enum.GetValues(typeof(PaymentStatus)))
+                        {
+                            <option value="@statusOption" selected="@(statusOption == suggestedStatus ? "selected" : null)">@statusOption</option>
+                        }
+                    </select>
+                    <div class="form-text">Suggested based on the deposit above - adjust if needed (e.g. mark as Overdue).</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Notes (optional)</label>
+                    <textarea name="reviewNotes" class="form-control" rows="2" placeholder="e.g. Lease terms agreed by phone."></textarea>
+                </div>
+
+                <div class="alert alert-info small">
+                    Confirming will create the @(isPurchase ? "sale" : "rental") record, mark the property as
+                    @(isPurchase ? "Sold" : "Rented"), and notify the customer.
+                </div>
+
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Confirm</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var amountInput = document.getElementById('agreedAmountInput');
+            var depositInput = document.getElementById('depositInput');
+            var display = document.getElementById('remainingBalanceDisplay');
+
+            function updateRemaining() {
+                var amount = parseFloat(amountInput.value) || 0;
+                var deposit = parseFloat(depositInput.value) || 0;
+                var remaining = amount - deposit;
+                display.textContent = remaining.toLocaleString('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
+                display.classList.toggle('text-success', remaining <= 0);
+                display.classList.toggle('text-danger', remaining > 0);
+            }
+
+            amountInput.addEventListener('input', updateRemaining);
+            depositInput.addEventListener('input', updateRemaining);
+            updateRemaining();
+        })();
+    </script>
+}

@@ -1,0 +1,65 @@
+@model Sale
+@{
+    ViewData["Title"] = "Add Sale";
+}
+
+<h3 class="page-title mb-4">Add Sale</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CustomerId" class="form-label">Customer</label>
+                <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers">
+                    <option value="">-- Select Customer --</option>
+                </select>
+                <span asp-validation-for="CustomerId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="PropertyId" class="form-label">Property</label>
+                <select asp-for="PropertyId" class="form-select" asp-items="ViewBag.Properties">
+                    <option value="">-- Select Available Property --</option>
+                </select>
+                <span asp-validation-for="PropertyId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="SalesAgentId" class="form-label">Sales Agent</label>
+                <select asp-for="SalesAgentId" class="form-select" asp-items="ViewBag.Agents">
+                    <option value="">-- Select Sales Agent --</option>
+                </select>
+                <span asp-validation-for="SalesAgentId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="SaleDate" class="form-label"></label>
+                <input asp-for="SaleDate" class="form-control" type="date" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="TotalPrice" class="form-label"></label>
+                <input asp-for="TotalPrice" class="form-control" />
+                <span asp-validation-for="TotalPrice" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Discount" class="form-label"></label>
+                <input asp-for="Discount" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Deposit" class="form-label"></label>
+                <input asp-for="Deposit" class="form-control" />
+            </div>
+        </div>
+
+        <div class="alert alert-info small mt-3">
+            The final price, remaining balance and payment status will be calculated automatically, and the property will be marked as <strong>Sold</strong>.
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Sale</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

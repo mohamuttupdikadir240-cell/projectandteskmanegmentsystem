@@ -1,0 +1,53 @@
+@model Rental
+@{
+    ViewData["Title"] = "Edit Rental";
+}
+
+<h3 class="page-title mb-4">Edit Rental</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="PropertyId" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CustomerId" class="form-label">Customer/Tenant</label>
+                <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers"></select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Property</label>
+                <select class="form-select" asp-items="ViewBag.Properties" disabled></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="MonthlyRent" class="form-label"></label>
+                <input asp-for="MonthlyRent" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="StartDate" class="form-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="EndDate" class="form-label"></label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Deposit" class="form-label"></label>
+                <input asp-for="Deposit" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ContractStatus" class="form-label"></label>
+                <select asp-for="ContractStatus" class="form-select" asp-items="Html.GetEnumSelectList<ContractStatus>()"></select>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,98 @@
+@model PropertyFormViewModel
+@{
+    ViewData["Title"] = "Edit Property";
+}
+
+<h3 class="page-title mb-4">Edit Property</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="Code" class="form-label"></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ProjectId" class="form-label">Project</label>
+                <select asp-for="ProjectId" class="form-select" asp-items="ViewBag.ProjectsList">
+                    <option value="">-- Select Project --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Type" class="form-label"></label>
+                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()"></select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Building" class="form-label"></label>
+                <input asp-for="Building" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Floor" class="form-label"></label>
+                <input asp-for="Floor" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="UnitNumber" class="form-label"></label>
+                <input asp-for="UnitNumber" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Area" class="form-label"></label>
+                <input asp-for="Area" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Bedrooms" class="form-label"></label>
+                <input asp-for="Bedrooms" class="form-control" type="number" min="0" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Bathrooms" class="form-label"></label>
+                <input asp-for="Bathrooms" class="form-control" type="number" min="0" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<PropertyStatus>()"></select>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Add More Images</label>
+                <input type="file" name="NewImages" class="form-control" multiple accept="image/*" />
+            </div>
+            <div class="col-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            @if (Model.ExistingImages.Any())
+            {
+                <div class="col-12">
+                    <label class="form-label">Existing Images</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var img in Model.ExistingImages)
+                        {
+                            <div class="position-relative">
+                                <img src="@img.ImagePath" class="rounded" style="width:100px;height:100px;object-fit:cover;" />
+                                <button type="submit" formaction="@Url.Action("DeleteImage", new { imageId = img.Id, propertyId = Model.Id })"
+                                        formmethod="post" class="btn btn-sm btn-danger position-absolute top-0 end-0" title="Remove image">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

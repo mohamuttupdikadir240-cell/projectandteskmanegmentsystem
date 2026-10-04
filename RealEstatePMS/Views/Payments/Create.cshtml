@@ -1,0 +1,68 @@
+@model Payment
+@{
+    ViewData["Title"] = "Add Payment";
+}
+
+<h3 class="page-title mb-4">Add Payment</h3>
+
+<div class="card form-card p-4">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CustomerId" class="form-label">Customer</label>
+                <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers">
+                    <option value="">-- Select Customer --</option>
+                </select>
+                <span asp-validation-for="CustomerId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <label asp-for="SaleId" class="form-label">Related Sale (with an outstanding balance)</label>
+                <select asp-for="SaleId" class="form-select" asp-items="ViewBag.Sales">
+                    <option value="">-- None --</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="RentalId" class="form-label">Related Rental (active contract)</label>
+                <select asp-for="RentalId" class="form-select" asp-items="ViewBag.Rentals">
+                    <option value="">-- None --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Amount" class="form-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="PaymentDate" class="form-label"></label>
+                <input asp-for="PaymentDate" class="form-control" type="date" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Method" class="form-label"></label>
+                <select asp-for="Method" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ReferenceNumber" class="form-label"></label>
+                <input asp-for="ReferenceNumber" class="form-control" />
+            </div>
+            <div class="col-12">
+                <label asp-for="Notes" class="form-label"></label>
+                <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+            </div>
+        </div>
+
+        <div class="alert alert-info small mt-3">
+            Choose either a Sale or a Rental. The remaining balance and payment status will be recalculated automatically.
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Payment</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

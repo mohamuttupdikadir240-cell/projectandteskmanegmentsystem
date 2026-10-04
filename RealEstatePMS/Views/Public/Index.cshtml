@@ -1,0 +1,128 @@
+@model PublicHomeViewModel
+@{
+    ViewData["Title"] = "Welcome";
+    Layout = "_PublicLayout";
+}
+
+<div class="public-hero mb-5">
+    <div class="public-hero-tag">Real Estate &middot; Project Management</div>
+    <h1 class="public-hero-title">REAL ESTATE<br />PROJECT MANAGEMENT<br />SYSTEM</h1>
+    <p class="public-hero-sub">
+        Find your dream property, track bookings, and manage sales, rentals and payments
+        all in one place &mdash; browse our available and rented properties without creating an account.
+    </p>
+</div>
+
+<div id="about" class="row g-4 align-items-center mb-5">
+    <div class="col-lg-6">
+        <h3 class="public-section-title mb-3">About Real Estate PMS</h3>
+        <p class="text-muted">
+            Real Estate PMS is a complete project management platform for property projects,
+            sales and rentals. We connect customers with available properties and give our
+            team the tools to manage every step &mdash; from construction progress to payments.
+        </p>
+        <div class="row g-3 mt-2">
+            <div class="col-sm-6">
+                <div class="card content-card p-3 h-100">
+                    <h6 class="fw-semibold"><i class="bi bi-bullseye text-primary"></i> Mission</h6>
+                    <p class="small text-muted mb-0">Deliver trustworthy, transparent real estate management services.</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card content-card p-3 h-100">
+                    <h6 class="fw-semibold"><i class="bi bi-eye text-primary"></i> Vision</h6>
+                    <p class="small text-muted mb-0">Become the most trusted platform for managing property projects.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="row g-3">
+            <div class="col-4">
+                <div class="public-value-card text-center">
+                    <i class="bi bi-award mx-auto"></i>
+                    <h6 class="fw-semibold mb-1">Quality</h6>
+                    <p class="small text-muted mb-0">High-quality properties and service.</p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="public-value-card text-center">
+                    <i class="bi bi-shield-check mx-auto"></i>
+                    <h6 class="fw-semibold mb-1">Trust</h6>
+                    <p class="small text-muted mb-0">Honesty and transparency, always.</p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="public-value-card text-center">
+                    <i class="bi bi-people mx-auto"></i>
+                    <h6 class="fw-semibold mb-1">Service</h6>
+                    <p class="small text-muted mb-0">Connecting customers to properties.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="public-cta-banner mb-5">
+    <h4 class="fw-bold mb-2">Talk to our team</h4>
+    <p class="mb-3">Need help choosing a property or a service?</p>
+    <a class="btn btn-light" asp-controller="Public" asp-action="Index" asp-fragment="contact">Contact Us</a>
+</div>
+
+<h3 class="public-section-title text-center mb-4">Why Choose Us</h3>
+<div class="row g-3 mb-5">
+    <div class="col-md-6 col-lg-3">
+        <div class="public-value-card">
+            <i class="bi bi-shield-lock"></i>
+            <h6 class="fw-semibold">Secure &amp; Trusted</h6>
+            <p class="small text-muted mb-0">Every property listing is verified before it goes live.</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="public-value-card">
+            <i class="bi bi-building-check"></i>
+            <h6 class="fw-semibold">Quality Properties</h6>
+            <p class="small text-muted mb-0">A growing catalog of available and rented properties.</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="public-value-card">
+            <i class="bi bi-headset"></i>
+            <h6 class="fw-semibold">Dedicated Support</h6>
+            <p class="small text-muted mb-0">Our team is here to help throughout the process.</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="public-value-card">
+            <i class="bi bi-cash-coin"></i>
+            <h6 class="fw-semibold">Easy Transactions</h6>
+            <p class="small text-muted mb-0">Simple booking, buying and rental process.</p>
+        </div>
+    </div>
+</div>
+
+<div class="public-stats mb-5">
+    <h4 class="text-center fw-bold mb-4">Built on trusted results</h4>
+    <div class="row text-center g-4">
+        <div class="col-4">
+            <div class="public-stat-value">@Model.ProjectCount</div>
+            <div class="public-stat-label">Projects</div>
+        </div>
+        <div class="col-4">
+            <div class="public-stat-value">@Model.PropertyCount</div>
+            <div class="public-stat-label">Properties Listed</div>
+        </div>
+        <div class="col-4">
+            <div class="public-stat-value">@Model.CustomerCount</div>
+            <div class="public-stat-label">Registered Customers</div>
+        </div>
+    </div>
+</div>
+
+<div id="contact" class="card content-card p-4 text-center">
+    <h6 class="fw-semibold mb-2">Have questions? Contact us</h6>
+    <div class="d-flex justify-content-center gap-4 flex-wrap">
+        <span><i class="bi bi-envelope text-primary"></i> info@realestate.com</span>
+        <span><i class="bi bi-telephone text-primary"></i> +252 61 000 0000</span>
+    </div>
+</div>

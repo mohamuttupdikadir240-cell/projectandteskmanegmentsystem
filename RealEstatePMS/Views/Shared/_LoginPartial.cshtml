@@ -1,0 +1,44 @@
+@using Microsoft.AspNetCore.Identity
+@using RealEstatePMS.Models.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    <ul class="navbar-nav align-items-center flex-row ms-auto">
+        @await Component.InvokeAsync("NotificationBell")
+        <li class="nav-item dropdown">
+            <a class="nav-link d-flex align-items-center gap-2" href="#" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                @if (!string.IsNullOrEmpty(user?.ProfileImagePath))
+                {
+                    <img src="@user.ProfileImagePath" class="avatar-sm" alt="avatar" />
+                }
+                else
+                {
+                    <i class="bi bi-person-circle fs-4 text-secondary"></i>
+                }
+                <span class="d-none d-md-inline text-dark small">
+                    @(user?.FullName ?? User.Identity!.Name)
+                </span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="bi bi-person me-2"></i>Profile</a></li>
+                <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword"><i class="bi bi-key me-2"></i>Change Password</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Login</a></li>
+        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Register</a></li>
+    </ul>
+}

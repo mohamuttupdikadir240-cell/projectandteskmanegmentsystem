@@ -1,0 +1,28 @@
+@model PaginationViewModel
+@{
+    Func<int, string> buildUrl = (page) =>
+    {
+        var query = new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(Context.Request.Query);
+        query["pageIndex"] = page.ToString();
+        return Context.Request.Path + QueryString.Create(query);
+    };
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex justify-content-end mt-3">
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                <a class="page-link" href="@buildUrl(Model.PageIndex - 1)">Previous</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" href="@buildUrl(i)">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                <a class="page-link" href="@buildUrl(Model.PageIndex + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+}
