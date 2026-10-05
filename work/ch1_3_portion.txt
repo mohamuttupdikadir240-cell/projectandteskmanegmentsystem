@@ -1,0 +1,79 @@
+
+EAST AFRICA UNIVERSITY
+FACULTY OF COMPUTING AND INFORMATION TECHNOLOGY
+
+
+DESIGN AND IMPLEMENTATION OF A REAL-TIME PROJECT AND TASK MANAGEMENT SYSTEM
+
+
+BY
+MAXAMUUD CABDIQAADIR MAXAMED
+3362
+
+
+A RESEARCH PROJECT SUBMITTED TO THE FACULTY OF COMPUTING AND
+INFORMATION TECHNOLOGY IN PARTIAL FULFILLMENT OF THE REQUIREMENTS FOR
+THE AWARD OF BACHELOR OF SCIENCE (BSc) DEGREE IN INFORMATION
+TECHNOLOGY OF EAST AFRICA UNIVERSITY
+
+
+SEPTEMBER, 2026
+
+
+DECLARATION
+I/We declare that this research project is my/our original work and has not been presented, in part or in whole, to any other academic institution for the award of a degree or any other academic credential.
+
+
+Name: MAXAMUUD CABDIQAADIR MAXAMED
+Signature: _______________________
+Date: _______________________
+
+
+APPROVAL
+This research project titled "Design and Implementation of a Real-Time Project and Task Management System" has been submitted for examination with my/our approval as the University Supervisor.
+
+
+Supervisor's Name: Cabdirisaaq Jirde
+Signature: _______________________
+Date: _______________________
+
+
+DEDICATION
+I dedicate this research project to my beloved family, whose endless support, patience and encouragement have been the foundation of my academic journey, and to everyone who believed in my potential to complete this work.
+
+
+ACKNOWLEDGEMENT
+First and foremost, I thank Almighty Allah for granting me the strength, knowledge and perseverance to complete this research project.
+I would like to express my sincere gratitude to my supervisor, Cabdirisaaq Jirde, for the guidance, patience and constructive feedback provided throughout the development of this study.
+I also extend my appreciation to the entire faculty of the Faculty of Computing and Information Technology, East Africa University, for the knowledge imparted to me during my studies.
+Finally, I am grateful to my family, friends and colleagues for their moral support and encouragement throughout this journey.
+
+
+ABSTRACT
+Effective coordination of projects and tasks remains a persistent challenge for many organizations that still rely on manual methods such as spreadsheets, paper-based logs, and informal messaging to plan, assign, and track work. These methods are prone to miscommunication, lost updates, missed deadlines, and a lack of visibility into who is responsible for what, which ultimately reduces organizational productivity and accountability. This study set out to design and implement a role-based, web-based Project and Task Management System capable of centralizing project planning, task assignment, progress tracking, deadline management, and reporting in a single platform accessible to Administrators, Project Managers, and Team Members.
+The study adopted the Agile-oriented Software Development Life Cycle (incremental development) as its research and system development design, combined with a Clean Architecture approach for the system's technical design. Requirements were gathered through review of existing literature and analysis of common organizational project-management practices, and were translated into functional and non-functional requirements, entity-relationship models, and use-case designs. The resulting system was implemented using ASP.NET Core 9 MVC, Entity Framework Core 9, and Microsoft SQL Server, and provides role-scoped dashboards, project and task CRUD operations, team assignment, comments and file attachments, automated deadline notifications, exportable PDF/Excel reports, analytics, audit logging, and global search.
+The system was tested using unit and integration tests to verify that each module performs its intended function and that the modules interact correctly end-to-end. The findings show that a centralized, role-based platform can substantially reduce the coordination overhead associated with manual project tracking, improve the traceability of task ownership, and give managers real-time visibility into project and team performance. The study concludes with recommendations for further enhancement of the system, including native mobile access, real-time push notifications, and integration with third-party calendar and communication tools.
+Keywords: Project Management, Task Management, Role-Based Access Control, ASP.NET Core, Clean Architecture, Software Development Life Cycle.
+
+
+TABLE OF CONTENTS
+DECLARATION	i
+APPROVAL	ii
+DEDICATION	iii
+ACKNOWLEDGEMENT	iv
+ABSTRACT	v
+LIST OF TABLES	vi
+LIST OF FIGURES	vii
+LIST OF ABBREVIATIONS	viii
+CHAPTER ONE: INTRODUCTION	1
+1.1 Background of the Study	1
+1.2 Statement of the Problem	2
+1.3 General Objective of the Study	3
+1.4 Specific Objectives of the Study	3
+1.5 Research Questions	3
+1.6 Conceptual Framework	4
+1.7 Scope of the Study	5
+1.8 Significance of the Study	5
+1.9 Expected Limitations of the Study	6
+CHAPTER TWO: LITERATURE REVIEW	7
+CHAPTER THREE: RESEARCH METHODOLOGY	7

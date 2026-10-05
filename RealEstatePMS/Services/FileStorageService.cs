@@ -9,6 +9,11 @@ public class FileStorageService : IFileStorageService
         _environment = environment;
     }
 
+    private string GetWebRoot() =>
+        string.IsNullOrEmpty(_environment.WebRootPath)
+            ? Path.Combine(AppContext.BaseDirectory, "wwwroot")
+            : _environment.WebRootPath;
+
     public bool IsAllowedFile(IFormFile file, string[] allowedExtensions, long maxSizeBytes)
     {
         if (file.Length <= 0 || file.Length > maxSizeBytes) return false;
@@ -18,7 +23,7 @@ public class FileStorageService : IFileStorageService
 
     public async Task<string> SaveFileAsync(IFormFile file, string subFolder)
     {
-        var uploadsRoot = Path.Combine(_environment.WebRootPath, "uploads", subFolder);
+        var uploadsRoot = Path.Combine(GetWebRoot(), "uploads", subFolder);
         Directory.CreateDirectory(uploadsRoot);
 
         var safeExtension = Path.GetExtension(file.FileName);
@@ -36,7 +41,7 @@ public class FileStorageService : IFileStorageService
     public void DeleteFile(string relativePath)
     {
         if (string.IsNullOrWhiteSpace(relativePath)) return;
-        var fullPath = Path.Combine(_environment.WebRootPath, relativePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+        var fullPath = Path.Combine(GetWebRoot(), relativePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);

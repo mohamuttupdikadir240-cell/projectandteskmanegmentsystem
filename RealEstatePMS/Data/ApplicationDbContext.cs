@@ -183,7 +183,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<BookingRequest>(entity =>
         {
-            entity.HasIndex(b => b.BookingNumber).IsUnique().HasFilter("[BookingNumber] <> ''");
+            var provider = Database.ProviderName ?? "";
+            if (provider.Contains("Npgsql", StringComparison.OrdinalIgnoreCase))
+            {
+                entity.HasIndex(b => b.BookingNumber).IsUnique().HasFilter("\"BookingNumber\" IS NOT NULL AND \"BookingNumber\" <> ''");
+            }
+            else if (provider.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+            {
+                entity.HasIndex(b => b.BookingNumber).IsUnique().HasFilter("[BookingNumber] IS NOT NULL AND [BookingNumber] <> ''");
+            }
+            else
+            {
+                entity.HasIndex(b => b.BookingNumber).IsUnique().HasFilter("BookingNumber IS NOT NULL AND BookingNumber <> ''");
+            }
         });
 
         builder.Entity<NotificationPreference>(entity =>
